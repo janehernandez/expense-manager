@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\UsersExpenseController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -23,11 +25,21 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-    Route::get('/roles', [RolePermissionController::class, 'index'])->name('roles.index');
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+
+    Route::resource('/expenses', UsersExpenseController::class)
+        ->only(['index', 'store', 'update', 'destroy']);
+
+    Route::middleware('role:Administrator')->group(function () {
+        Route::resource('/roles', RoleController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+
+        Route::resource('/users', UserController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+
+        Route::resource('/expense-categories', ExpenseCategoryController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+    });
 });
 
 Route::middleware('auth')->group(function () {

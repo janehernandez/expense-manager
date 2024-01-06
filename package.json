@@ -19,6 +19,8 @@
     },
     "dependencies": {
         "dayjs": "^1.11.10",
-        "lodash": "^4.17.21"
+        "lodash": "^4.17.21",
+        "vue-toastification": "^2.0.0-rc.5",
+        "vue3-apexcharts": "^1.4.4"
     }
 }

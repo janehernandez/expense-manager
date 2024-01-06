@@ -1,14 +1,30 @@
 <script setup>
-import { ref } from "vue";
+import { Link, usePage } from "@inertiajs/vue3";
+import { useToast } from "vue-toastification";
+import { ref, computed, watch } from "vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import DropdownParent from "@/Components/DropdownParent.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
-import { Link } from "@inertiajs/vue3";
 
 const showingNavigationDropdown = ref(false);
+const toast = useToast();
+const message = computed(() => usePage().props.flash);
+
+watch(
+    message,
+    (message) => {
+        if (message) {
+            toast(message.text, {
+                type: message.type,
+                timeout: 3000,
+            });
+        }
+    },
+    { deep: true }
+);
 </script>
 
 <template>
@@ -86,14 +102,17 @@ const showingNavigationDropdown = ref(false);
 
                                     <template #content>
                                         <DropdownLink
-                                            :href="route('profile.edit')"
+                                            v-if="$page.props.auth.user.isAdmin"
+                                            :href="
+                                                route(
+                                                    'expense-categories.index'
+                                                )
+                                            "
                                         >
                                             Expenses Categories
                                         </DropdownLink>
                                         <DropdownLink
-                                            :href="route('logout')"
-                                            method="post"
-                                            as="button"
+                                            :href="route('expenses.index')"
                                         >
                                             Expenses
                                         </DropdownLink>
@@ -208,7 +227,10 @@ const showingNavigationDropdown = ref(false);
                         </ResponsiveNavLink>
 
                         <!-- Responsive User Management Options -->
-                        <div v-if="$page.props.auth.user.isAdmin" class="pt-4 pb-1 border-t border-gray-200">
+                        <div
+                            v-if="$page.props.auth.user.isAdmin"
+                            class="pt-4 pb-1 border-t border-gray-200"
+                        >
                             <div class="px-4">
                                 <div
                                     class="font-medium text-base text-gray-800"
@@ -238,10 +260,15 @@ const showingNavigationDropdown = ref(false);
                             </div>
 
                             <div class="mt-3 space-y-1">
-                                <ResponsiveNavLink :href="route('roles.index')">
+                                <ResponsiveNavLink
+                                    v-if="$page.props.auth.user.isAdmin"
+                                    :href="route('expense-categories.index')"
+                                >
                                     Expenses Categories
                                 </ResponsiveNavLink>
-                                <ResponsiveNavLink :href="route('users.index')">
+                                <ResponsiveNavLink
+                                    :href="route('expenses.index')"
+                                >
                                     Expenses
                                 </ResponsiveNavLink>
                             </div>

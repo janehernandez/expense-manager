@@ -6,29 +6,29 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Table from "@/Components/Table.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Modal from "@/Components/Modal.vue";
-import RoleForm from "@/Components/Forms/RoleForm.vue";
+import ExpenseForm from "@/Components/Forms/ExpenseForm.vue";
 
 defineProps({
-    roles: {
+    userExpenses: {
         type: Object,
     },
 });
 
 const createModal = ref(false);
 const updateModal = ref(false);
-const role = ref(null);
+const expense = ref(null);
 
 const showCreateModal = () => {
     createModal.value = true;
 };
 const showUpdateModal = (resource) => {
     updateModal.value = true;
-    role.value = resource;
+    expense.value = resource;
 };
 
 const closeModal = () => {
     if (updateModal.value) {
-        role.value = null;
+        expense.value = null;
     }
 
     createModal.value = false;
@@ -36,19 +36,20 @@ const closeModal = () => {
 };
 
 const columns = [
-    { name: "Role", attribute: "name" },
-    { name: "Description", attribute: "description" },
+    { name: "Expense Category", attribute: "expense_category.name" },
+    { name: "Amount", attribute: "amount" },
+    { name: "Entry Date", attribute: "entry_date" },
     { name: "Created at", attribute: "created_at" },
 ];
 </script>
 
 <template>
-    <Head title="Roles" />
+    <Head title="Expenses" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Roles
+                Expenses
             </h2>
         </template>
 
@@ -56,21 +57,31 @@ const columns = [
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <Table :resources="roles" :columns="columns">
-                            <template #cell-name="{ resource }">
+                        <Table :resources="userExpenses" :columns="columns">
+                            <template
+                                #cell-expense_category.name="{ resource }"
+                            >
                                 <div
                                     class="cursor-pointer hover:text-gray-600"
                                     @click="showUpdateModal(resource)"
                                 >
-                                    {{ resource.name }}
+                                    {{ resource.expense_category.name }}
                                 </div>
                             </template>
-                            <template #cell-description="{ resource }">
+                            <template #cell-amount="{ resource }">
                                 <div
                                     class="cursor-pointer hover:text-gray-600"
                                     @click="showUpdateModal(resource)"
                                 >
-                                    {{ resource.description }}
+                                    $ {{ resource.amount }}
+                                </div>
+                            </template>
+                            <template #cell-entry_date="{ resource }">
+                                <div
+                                    class="cursor-pointer hover:text-gray-600"
+                                    @click="showUpdateModal(resource)"
+                                >
+                                    {{ resource.entry_date }}
                                 </div>
                             </template>
                             <template #cell-created_at="{ resource }">
@@ -88,23 +99,18 @@ const columns = [
                         </Table>
 
                         <div class="flex items-center justify-center mt-6">
-                            <PrimaryButton
-                                v-if="$page.props.auth.user.isAdmin"
-                                @click="showCreateModal"
-                            >
-                                Add Role
+                            <PrimaryButton @click="showCreateModal">
+                                Add Expense
                             </PrimaryButton>
                         </div>
                     </div>
                 </div>
             </div>
-
             <Modal :show="createModal" @close="closeModal">
-                <RoleForm @close="closeModal" />
+                <ExpenseForm @close="closeModal" />
             </Modal>
-
             <Modal :show="updateModal" @close="closeModal">
-                <RoleForm :role="role" @close="closeModal" />
+                <ExpenseForm :expense="expense" @close="closeModal" />
             </Modal>
         </div>
     </AuthenticatedLayout>

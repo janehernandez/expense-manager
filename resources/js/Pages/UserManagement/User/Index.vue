@@ -1,14 +1,41 @@
 <script setup>
+import { Head } from "@inertiajs/vue3";
+import { ref } from "vue";
 import dayjs from "dayjs";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Table from "@/Components/Table.vue";
-import { Head } from "@inertiajs/vue3";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Modal from "@/Components/Modal.vue";
+import UserForm from "@/Components/Forms/UserForm.vue";
 
 defineProps({
     users: {
         type: Object,
     },
 });
+
+const createModal = ref(false);
+const updateModal = ref(false);
+const user = ref(null);
+
+const emit = defineEmits(["close"]);
+
+const showCreateModal = () => {
+    createModal.value = true;
+};
+const showUpdateModal = (resource) => {
+    updateModal.value = true;
+    user.value = resource;
+};
+
+const closeModal = () => {
+    if (updateModal.value) {
+        user.value = null;
+    }
+
+    createModal.value = false;
+    updateModal.value = false;
+};
 
 const columns = [
     { name: "Name", attribute: "name" },
@@ -31,30 +58,63 @@ const columns = [
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <Table :resources="users" :columns="columns">
+                            <template #cell-name="{ resource }">
+                                <div
+                                    class="cursor-pointer hover:text-gray-600"
+                                    @click="showUpdateModal(resource)"
+                                >
+                                    {{ resource.name }}
+                                </div>
+                            </template>
+                            <template #cell-email="{ resource }">
+                                <div
+                                    class="cursor-pointer hover:text-gray-600"
+                                    @click="showUpdateModal(resource)"
+                                >
+                                    {{ resource.email }}
+                                </div>
+                            </template>
                             <template #cell-roles="{ resource }">
-                                {{ resource.roles[0].name }}
+                                <div
+                                    class="cursor-pointer hover:text-gray-600"
+                                    @click="showUpdateModal(resource)"
+                                >
+                                    {{ resource.roles[0]?.name }}
+                                </div>
                             </template>
                             <template #cell-created_at="{ resource }">
-                                {{
-                                    dayjs(resource.created_at).format(
-                                        "YYYY-MM-DD"
-                                    )
-                                }}
+                                <div
+                                    class="cursor-pointer hover:text-gray-600"
+                                    @click="showUpdateModal(resource)"
+                                >
+                                    {{
+                                        dayjs(resource.created_at).format(
+                                            "YYYY-MM-DD"
+                                        )
+                                    }}
+                                </div>
                             </template>
                         </Table>
 
                         <div class="flex items-center justify-center mt-6">
-                            <button
+                            <PrimaryButton
                                 v-if="$page.props.auth.user.isAdmin"
-                                type="button"
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                @click="showCreateModal"
                             >
                                 Add User
-                            </button>
+                            </PrimaryButton>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <Modal :show="createModal" @close="closeModal">
+                <UserForm @close="closeModal" />
+            </Modal>
+
+            <Modal :show="updateModal" @close="closeModal">
+                <UserForm :user="user" @close="closeModal" />
+            </Modal>
         </div>
     </AuthenticatedLayout>
 </template>

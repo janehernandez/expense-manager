@@ -43,8 +43,12 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-
     protected $appends = ['isAdmin'];
+
+    public function expenses()
+    {
+        return $this->hasMany(UsersExpense::class);
+    }
 
     public function getIsAdminAttribute()
     {
