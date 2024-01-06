@@ -1,5 +1,10 @@
 # Getting started
 
+## Sample Screenshots
+![image](https://github.com/janehernandez/expense-manager/assets/35588528/0944cef7-a480-45ce-850f-e5c0bfe07609)
+![image](https://github.com/janehernandez/expense-manager/assets/35588528/9eb956af-71ad-480a-8820-4b1a1b50fba8)
+
+
 ## Installation
 
 Clone the repository
