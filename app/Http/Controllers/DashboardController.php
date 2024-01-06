@@ -20,6 +20,7 @@ class DashboardController extends Controller
             ->groupBy('expense_category_id')
             ->get();
 
+        // PIE CHART REFERENCE (Series and labels)
         $categories = $summary->pluck('category')->toArray();
         $percentages = $summary->pluck('percentage')->map(function ($percentage) {
             return floatval($percentage);
