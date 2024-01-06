@@ -110,16 +110,24 @@ const cancel = () => {
             :class="[
                 'flex',
                 'items-center',
-                props.role ? 'justify-between' : 'justify-end',
+                props.role && props.role?.name !== 'Administrator'
+                    ? 'justify-between'
+                    : 'justify-end',
             ]"
         >
-            <DangerButton v-if="props.role" @click="deleteRole">
+            <DangerButton
+                v-if="props.role && props.role?.name !== 'Administrator'"
+                @click="deleteRole"
+            >
                 Delete
             </DangerButton>
             <div>
                 <SecondaryButton @click="cancel"> Cancel </SecondaryButton>
                 <PrimaryButton
-                    v-if="$page.props.auth.user.isAdmin"
+                    v-if="
+                        $page.props.auth.user.isAdmin &&
+                        props.role?.name !== 'Administrator'
+                    "
                     class="text-white ml-2"
                     @click="submit"
                 >
