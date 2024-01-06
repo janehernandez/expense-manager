@@ -132,7 +132,9 @@ const cancel = () => {
             :class="[
                 'flex',
                 'items-center',
-                props.user && $page.props.auth.user.email !== props.user?.email
+                props.user &&
+                $page.props.auth.user.email !== props.user?.email &&
+                !props.user?.isAdmin
                     ? 'justify-between'
                     : 'justify-end',
             ]"
@@ -140,16 +142,23 @@ const cancel = () => {
             <DangerButton
                 v-if="
                     props.user &&
-                    $page.props.auth.user.email !== props.user?.email
+                    $page.props.auth.user.email !== props.user?.email &&
+                    !props.user?.isAdmin
                 "
                 @click="deleteUser"
             >
                 Delete
             </DangerButton>
+
             <div>
                 <SecondaryButton @click="cancel"> Cancel </SecondaryButton>
                 <PrimaryButton
-                    v-if="$page.props.auth.user.isAdmin"
+                    v-if="
+                        $page.props.auth.user.isAdmin &&
+                        props.user &&
+                        $page.props.auth.user.email !== props.user?.email &&
+                        !props.user?.isAdmin
+                    "
                     class="text-white ml-2"
                     @click="submit"
                 >

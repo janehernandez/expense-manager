@@ -16,7 +16,7 @@ class StoreUsersExpenseRequest extends FormRequest
         return [
             'expense_category_id' => ['required', 'numeric', 'exists:expense_categories,id'],
             'amount' => ['required', 'numeric'],
-            'entry_date' => ['required', 'date'],
+            'entry_date' => ['required', 'date', 'before_or_equal:today'],
         ];
     }
 }
