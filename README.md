@@ -42,7 +42,7 @@ Start the local development server
 
     npm run dev
 
-You can now access the server at http://localhost:8000
+You can now access the server at http://localhost:5173 by default
 
 **TL;DR command list**
 
@@ -53,7 +53,7 @@ You can now access the server at http://localhost:8000
     php artisan key:generate
     php artisan jwt:generate
 
-**Make sure you set the correct database connection information before running the migrations** [Environment variables](#environment-variables)
+**Make sure you set the correct database connection information before running the migrations**
 
     php artisan migrate
     php artisan db:seed
